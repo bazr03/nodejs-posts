@@ -54,7 +54,7 @@ module.exports = `
         "Devuelve todos los Post!"
         getPosts: [Post]!
         "Devuelve posts de un Usuario!"
-        getPostsByUser(userId : ID!):[Post!]!
+        getPostsByUser(email : String!):[Post!]!
         "Devuelve un Post!"
         getPost(_id: ID!): Post!
     }

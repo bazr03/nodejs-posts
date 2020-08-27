@@ -5,26 +5,26 @@ module.exports = {
   /*--------------------------------------------- 
   ---------- GET USERS FUNCTION ---------------
   -----------------------------------------------*/
-  getUsers: async function() {
+  getUsers: async function () {
     const totalUsers = await User.find().countDocuments();
     const users = await User.find();
     if (!users) {
       throw new Error("No fue posible obtener usuarios");
     }
     return {
-      users: users.map(user => {
+      users: users.map((user) => {
         return {
           ...user._doc,
-          _id: user._id.toString()
+          _id: user._id.toString(),
         };
       }),
-      totalUsers: totalUsers
+      totalUsers: totalUsers,
     };
   },
   /*--------------------------------------------- 
   ---------- GET USER FUNCTION ---------------
   -----------------------------------------------*/
-  getUser: async function(parent, { _id }) {
+  getUser: async function (parent, { _id }) {
     if (!_id) {
       throw new Error("Es necesario proporcionar el ID!");
     }
@@ -37,13 +37,13 @@ module.exports = {
 
     return {
       ...user._doc,
-      _id: user._id.toString()
+      _id: user._id.toString(),
     };
   },
   /*--------------------------------------------- 
   ---------- GET POSTS FUNCTION ---------------
   -----------------------------------------------*/
-  getPosts: async function() {
+  getPosts: async function () {
     const posts = await Post.find();
     if (!posts) {
       const error = new Error("No se encontro ningun Post!");
@@ -52,12 +52,12 @@ module.exports = {
     }
 
     if (posts) {
-      return posts.map(post => {
+      return posts.map((post) => {
         return {
           ...post._doc,
           _id: post._id.toString(),
           createdAt: post.createdAt.toISOString(),
-          updatedAt: post.updatedAt.toISOString()
+          updatedAt: post.updatedAt.toISOString(),
         };
       });
     } else {
@@ -67,16 +67,22 @@ module.exports = {
   /*--------------------------------------------- 
   ---------- GET POSTS BY USER FUNCTION -------------
   -----------------------------------------------*/
-  getPostsByUser: async function(parent, { userId }, ctx, info) {
-    const posts = await Post.find({ creator: userId });
+  getPostsByUser: async function (parent, { email }, ctx, info) {
+    const user = await User.find({ email: email });
+    if (!user) {
+      const error = new Error("Usuario no encontrado!");
+      error.code = 404;
+      throw error;
+    }
+    const posts = await Post.find({ creator: user });
 
     return posts
-      ? posts.map(post => {
+      ? posts.map((post) => {
           return {
             ...post._doc,
             _id: post._id.toString(),
             createdAt: post.createdAt.toISOString(),
-            updatedAt: post.updatedAt.toISOString()
+            updatedAt: post.updatedAt.toISOString(),
           };
         })
       : [];
@@ -84,7 +90,7 @@ module.exports = {
   /*--------------------------------------------- 
   ---------- GET POST FUNCTION ---------------
   -----------------------------------------------*/
-  getPost: async function(parent, { _id }) {
+  getPost: async function (parent, { _id }) {
     if (!_id) {
       const error = new Error("Es necesario proporcionar ID del Post!");
       error.code = 404;
@@ -102,7 +108,7 @@ module.exports = {
       ...post._doc,
       _id: post._id.toString(),
       createdAt: post.createdAt.toISOString(),
-      updatedAt: post.updatedAt.toISOString()
+      updatedAt: post.updatedAt.toISOString(),
     };
-  }
+  },
 };
