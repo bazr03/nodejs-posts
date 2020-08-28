@@ -18,6 +18,9 @@ const postSchema = new Schema(
       ref: "User",
       required: true
     },
+    totalComments: {
+      type: Number
+    },
     comments: [
       {
         type: Schema.Types.ObjectId,

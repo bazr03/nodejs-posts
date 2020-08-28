@@ -3,6 +3,7 @@ type Post {
         title: String!
         body: String!
         creator: User!
+        totalComments: Int
         comments: [Comment!]!
         createdAt: String!
         updatedAt: String!
@@ -53,6 +54,7 @@ type Post {
         getPosts: [Post]!
         "Devuelve posts de un Usuario!"
         getPostsByUser(email : String!):[Post!]!
+        getLatestPosts: [Post]!
         "Devuelve un Post!"
         getPost(_id: ID!): Post!
     }

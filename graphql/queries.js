@@ -44,6 +44,32 @@ module.exports = {
   ---------- GET POSTS FUNCTION ---------------
   -----------------------------------------------*/
   getPosts: async function () {
+    const posts = await Post.find().populate('comments');
+    if (!posts) {
+      const error = new Error("No se encontro ningun Post!");
+      error.code = 404;
+      throw error;
+    }   
+
+    const postsToReturn = posts.map( post => {
+      return {
+        ...post._doc,
+        _id: post._id.toString(),
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString(),
+        totalComments: post.comments.length
+      }
+    } );
+
+    //console.log(postsToReturn);
+    return postsToReturn;
+
+  },
+
+  /*--------------------------------------------- 
+  ---------- GET LATEST POSTS FUNCTION ---------------
+  -----------------------------------------------*/
+  getLatestPosts: async function () {
     const posts = await Post.find();
     if (!posts) {
       const error = new Error("No se encontro ningun Post!");
@@ -51,18 +77,15 @@ module.exports = {
       throw error;
     }
 
-    if (posts) {
-      return posts.map((post) => {
-        return {
-          ...post._doc,
-          _id: post._id.toString(),
-          createdAt: post.createdAt.toISOString(),
-          updatedAt: post.updatedAt.toISOString(),
-        };
-      });
-    } else {
-      return [];
-    }
+    return posts.map((post) => {
+      return {
+        ...post._doc,
+        _id: post._id.toString(),
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString(),
+      };
+    });
+
   },
   /*--------------------------------------------- 
   ---------- GET POSTS BY USER FUNCTION -------------
@@ -111,4 +134,6 @@ module.exports = {
       updatedAt: post.updatedAt.toISOString(),
     };
   },
+  
 };
+
